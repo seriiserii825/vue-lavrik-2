@@ -1,8 +1,8 @@
 <template>
   <div class="form-group">
     <label>{{ name }}</label>
-    <transition :name="animateIcons">
-      <fa-icon v-if="activated" :name="icon" :class="iconClasses"></fa-icon>
+    <transition v-if="activated" name="icon" mode="out-in" appear appear-active-class="icon-appear-active">
+      <fa-icon :name="icon" :key="icon" :class="iconClasses"></fa-icon>
     </transition>
     <input type="text"
            class="form-control"
@@ -32,47 +32,36 @@ export default {
     },
     iconClasses () {
       return this.valid ? 'text-success' : 'text-danger';
-    },
-    animateIcons () {
-      return this.valid ? 'rotate' : 'fade';
     }
   },
   methods: {
     onInput (e) {
       this.activated = true;
       this.$emit('updated', e.target.value);
-      console.log(this.valid);
     }
   }
 }
 </script>
 <style>
-@keyframes fade {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+@keyframes iconIn {
+  from {transform: rotateY(-90deg)}
+  to {transform: rotateY(0)}
 }
-@keyframes rotate {
-  0% {
-    transform: rotateY(0);
-  }
-  100% {
-    transform: rotateY(720deg);
-  }
+@keyframes iconOut {
+  from {transform: rotateY(0)}
+  to {transform: rotateY(-90deg)}
 }
-.fade-enter-active {
-  animation: fade .3s ease-in;
+@keyframes iconFade {
+  from {opacity: 0}
+  to {opacity: 1}
 }
-.fade-leave-active {
-  animation: fade .3s ease-in reverse;
+.icon-enter-active {
+  animation: iconIn .3s;
 }
-.rotate-enter-active {
-  animation: rotate 1s ease-in;
+.icon-leave-active {
+  animation: iconOut .3s;
 }
-.rotate-leave-active {
-  animation: rotate 1s ease-in reverse;
+.icon-appear-active {
+  animation: iconFade .6s;
 }
 </style>
